@@ -2,7 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from backend.app.db import crud, schemas, models
-from backend.app.core.security import hash_password, verify_password, create_access_token, verify_access_token
+from backend.app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    verify_access_token,
+)
 from backend.app.db.session import get_db
 from backend.app.db.schemas import LoginRequest
 from pydantic import BaseModel
@@ -10,6 +15,7 @@ from pydantic import BaseModel
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -39,15 +45,21 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+):
     payload = verify_access_token(token)  # raises if invalid
     user_id: str = payload.get("sub")
     if user_id is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid payload")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid payload"
+        )
 
     user = crud.get_user(db, int(user_id))
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
 
     return user
 

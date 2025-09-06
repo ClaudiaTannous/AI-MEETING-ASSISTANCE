@@ -19,13 +19,12 @@ def create_meeting(
     return crud.create_meeting(db=db, meeting=meeting, user_id=current_user.id)
 
 
-
 @router.get("", response_model=list[schemas.MeetingWithTranscript])
 def get_meetings(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-   
+
     return crud.get_meetings_for_user(db=db, user_id=current_user.id)
 
 
@@ -64,6 +63,8 @@ def delete_meeting(
     db.delete(meeting)
     db.commit()
     return None
+
+
 @router.put("/{meeting_id}", response_model=schemas.MeetingOut)
 def update_meeting(
     meeting_id: int,

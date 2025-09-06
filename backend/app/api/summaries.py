@@ -19,7 +19,10 @@ def generate_summary(transcript_text: str) -> str:
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are an AI that summarizes meeting transcripts."},
+            {
+                "role": "system",
+                "content": "You are an AI that summarizes meeting transcripts.",
+            },
             {"role": "user", "content": transcript_text},
         ],
         max_tokens=500,
@@ -28,6 +31,7 @@ def generate_summary(transcript_text: str) -> str:
 
 
 # ----------------- ROUTES -----------------
+
 
 @router.post("/{transcript_id}/ai", response_model=schemas.SummaryOut)
 def create_ai_summary(
@@ -62,7 +66,9 @@ def get_summaries_for_transcript(
     """
     transcript = crud.get_transcript(db, transcript_id=transcript_id)
     if not transcript or transcript.meeting.user_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Transcript not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Transcript not found"
+        )
     return crud.get_summaries_for_transcript(db, transcript_id=transcript_id)
 
 
@@ -85,7 +91,9 @@ def update_summary(
 
     updated = crud.update_summary(db, summary_id=summary_id, new_data=new_data)
     if not updated:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Summary not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Summary not found"
+        )
 
     return updated
 
@@ -101,7 +109,9 @@ def delete_summary(
     """
     summary = db.query(models.Summary).filter(models.Summary.id == summary_id).first()
     if not summary or summary.transcript.meeting.user_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Summary not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Summary not found"
+        )
 
     crud.delete_summary(db, summary_id)
     return None

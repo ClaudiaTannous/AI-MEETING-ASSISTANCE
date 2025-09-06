@@ -16,7 +16,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,            # 👈 allow frontend origin
+    allow_origins=origins,  # 👈 allow frontend origin
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,6 +27,7 @@ app.include_router(auth.router)
 app.include_router(meetings.router)
 app.include_router(transcripts.router)
 app.include_router(summaries.router)
+
 
 @app.get("/")
 def root():
