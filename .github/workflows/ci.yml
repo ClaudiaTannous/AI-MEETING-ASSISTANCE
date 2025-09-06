@@ -21,14 +21,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
           pip install pytest flake8 black
 
       - name: Lint with flake8
-        run: flake8 app
+        run: flake8 backend/app
 
       - name: Check formatting with black
-        run: black --check app
+        run: black --check backend/app
 
       - name: Run pytest
+        working-directory: backend
         run: pytest
