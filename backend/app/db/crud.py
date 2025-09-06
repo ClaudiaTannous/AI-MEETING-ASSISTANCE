@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import datetime
 from . import models, schemas
-from sqlalchemy.orm import joinedload
+
 
 
 def create_user(db: Session, user: schemas.UserCreate, hashed_password: str):
