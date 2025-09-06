@@ -3,7 +3,6 @@ from datetime import datetime
 from . import models, schemas
 
 
-
 def create_user(db: Session, user: schemas.UserCreate, hashed_password: str):
     db_user = models.User(
         name=user.name, email=user.email, hashed_password=hashed_password
