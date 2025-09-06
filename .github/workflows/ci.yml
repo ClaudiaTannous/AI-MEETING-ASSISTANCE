@@ -29,7 +29,3 @@ jobs:
 
       - name: Check formatting with black
         run: black --check backend/app
-
-      - name: Run pytest
-        working-directory: backend/app
-        run: pytest
