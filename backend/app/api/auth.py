@@ -70,6 +70,7 @@ def get_current_user(
 def read_users_me(current_user: models.User = Depends(get_current_user)):
     return current_user
 
+
 @router.post("/logout")
 def logout(request: Request):
     return {"message": "Successfully logged out. Please clear your token on the client."}
