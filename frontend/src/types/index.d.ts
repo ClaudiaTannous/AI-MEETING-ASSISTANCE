@@ -2,29 +2,29 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  meetings: Meeting[]; // always present (empty array if none)
+  meetings: Meeting[];
 }
 
 export interface Meeting {
   id: number;
   title: string;
-  date: string; // ISO datetime string
+  date: string;
   user_id: number;
-  transcript: Transcript | null; // always present, null if no transcript
+  transcript: Transcript | null;
 }
 
 export interface Transcript {
   id: number;
   content: string;
-  created_at: string; // ISO datetime string
+  created_at: string;
   meeting_id: number;
-  summaries: Summary[]; // always present (empty if none)
+  summaries: Summary[];
 }
 
 export interface Summary {
   id: number;
   summary_text: string;
   source: string;
-  created_at: string; // ISO datetime string
+  created_at: string;
   transcript_id: number;
 }

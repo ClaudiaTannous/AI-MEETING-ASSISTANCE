@@ -51,11 +51,14 @@ export default function MeetingsPage() {
       className="min-h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('/images/background1.png')" }}
     >
+      {/* ✅ Recording Container */}
       <div className="flex justify-center mt-12 px-6">
         <div
           className="bg-white/30 backdrop-blur-md shadow-lg px-12 py-8 rounded-3xl border border-white/40 
-             w-full max-w-7xl  flex items-center justify-between"
+             w-full max-w-7xl transform transition duration-300 
+             hover:scale-105 active:scale-95 flex items-center justify-between"
         >
+          {/* Left side: Logo + Text */}
           <div className="flex items-center gap-4">
             <img
               src="logo1.svg"
@@ -83,7 +86,8 @@ export default function MeetingsPage() {
       <div className="flex justify-center mt-12 px-6">
         <div
           className="bg-white/30 backdrop-blur-md shadow-lg px-8 py-6 rounded-3xl border border-white/40 
-         w-full max-w-7xl "
+         w-full max-w-7xl transform transition duration-300 
+         hover:scale-105 active:scale-95"
         >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-900">

@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from backend.app.db import crud, schemas, models
+from fastapi import Request
+
 from backend.app.core.security import (
     hash_password,
     verify_password,
@@ -67,3 +69,7 @@ def get_current_user(
 @router.get("/me", response_model=schemas.UserOut)
 def read_users_me(current_user: models.User = Depends(get_current_user)):
     return current_user
+
+@router.post("/logout")
+def logout(request: Request):
+    return {"message": "Successfully logged out. Please clear your token on the client."}

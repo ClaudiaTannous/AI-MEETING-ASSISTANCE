@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import api from "@/lib/api";
 import type { Meeting, Transcript, Summary } from "@/types";
 import Recorder from "@/components/Recorder";
@@ -12,6 +12,7 @@ interface RecorderProps {
 
 export default function MeetingDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const meetingId = parseInt(params?.id as string, 10);
 
   const [meeting, setMeeting] = useState<Meeting | null>(null);
@@ -23,6 +24,9 @@ export default function MeetingDetailsPage() {
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState("");
 
+  const [editingSummaryId, setEditingSummaryId] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+
   useEffect(() => {
     const fetchMeeting = async () => {
       try {
@@ -30,7 +34,7 @@ export default function MeetingDetailsPage() {
         const data = res.data as Meeting;
 
         setMeeting(data);
-        setNewTitle(data.title); // preload title into edit state
+        setNewTitle(data.title);
         if (data.transcript) {
           setTranscript(data.transcript);
           setSummaries(data.transcript.summaries || []);
@@ -71,6 +75,22 @@ export default function MeetingDetailsPage() {
     }
   };
 
+  const handleUpdateSummary = async (id: number) => {
+    try {
+      const res = await api.put<Summary>(`/summaries/${id}`, {
+        summary_text: editText,
+      });
+      const updated = res.data;
+
+      setSummaries((prev) => prev.map((s) => (s.id === id ? updated : s)));
+
+      setEditingSummaryId(null);
+      setEditText("");
+    } catch (err) {
+      console.error("Error updating summary:", err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -107,13 +127,13 @@ export default function MeetingDetailsPage() {
               />
               <button
                 onClick={handleSaveTitle}
-                className="bg-green-600 text-white px-3 py-1 rounded-lg"
+                className="bg-[#720026] text-white px-3 py-1 rounded-lg hover:bg-[#5a001d]"
               >
                 Save
               </button>
               <button
                 onClick={() => setEditingTitle(false)}
-                className="bg-gray-300 px-3 py-1 rounded-lg"
+                className="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded-lg"
               >
                 Cancel
               </button>
@@ -151,7 +171,6 @@ export default function MeetingDetailsPage() {
           )}
         </div>
 
-        {/* Summaries */}
         <div className="bg-white/30 backdrop-blur-md shadow-lg p-6 rounded-3xl border border-white/40">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-xl font-semibold">AI Summaries</h2>
@@ -159,9 +178,9 @@ export default function MeetingDetailsPage() {
               <button
                 onClick={handleGenerateAiSummary}
                 disabled={loadingSummary}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                className="bg-[#720026] text-white px-4 py-2 rounded-lg hover:bg-[#5a001d] disabled:opacity-50"
               >
-                {loadingSummary ? "Generating..." : "Generate AI Summary"}
+                {loadingSummary ? "Generating..." : "Generate New AI Summary"}
               </button>
             )}
           </div>
@@ -173,13 +192,51 @@ export default function MeetingDetailsPage() {
               {summaries.map((summary) => (
                 <div
                   key={summary.id}
-                  className="p-4 bg-gray-50/70 backdrop-blur-sm rounded-lg border"
+                  className="p-4 bg-white rounded-lg shadow space-y-2"
                 >
-                  <p className="text-gray-800">{summary.summary_text}</p>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Source: {summary.source} •{" "}
-                    {new Date(summary.created_at).toLocaleString()}
-                  </p>
+                  {editingSummaryId === summary.id ? (
+                    <div className="space-y-2">
+                      <textarea
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        className="w-full border rounded-lg p-2"
+                        rows={3}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleUpdateSummary(summary.id)}
+                          className="bg-[#720026] text-white px-3 py-1 rounded-lg hover:bg-[#5a001d]"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingSummaryId(null);
+                            setEditText("");
+                          }}
+                          className="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded-lg"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-gray-800">{summary.summary_text}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(summary.created_at).toLocaleString()}
+                      </p>
+                      <button
+                        onClick={() => {
+                          setEditingSummaryId(summary.id);
+                          setEditText(summary.summary_text);
+                        }}
+                        className="text-[#720026] text-xs underline hover:text-[#5a001d]"
+                      >
+                        Edit
+                      </button>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
