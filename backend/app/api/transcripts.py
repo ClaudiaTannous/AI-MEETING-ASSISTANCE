@@ -66,7 +66,7 @@ def create_or_update_transcript(
 async def transcribe_audio(
     meeting_id: int,
     file: UploadFile = File(...),
-    language: str = "auto",  
+    language: str = "auto",
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
@@ -85,7 +85,7 @@ async def transcribe_audio(
             transcript_data = client.audio.transcriptions.create(
                 model="whisper-1",
                 file=audio_file,
-                language=None if language == "auto" else language,  
+                language=None if language == "auto" else language,
             )
         text = transcript_data.text.strip()
         if not text:
