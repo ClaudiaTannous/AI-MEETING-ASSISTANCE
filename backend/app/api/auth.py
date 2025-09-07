@@ -50,7 +50,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
 def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ):
-    payload = verify_access_token(token)  # raises if invalid
+    payload = verify_access_token(token)
     user_id: str = payload.get("sub")
     if user_id is None:
         raise HTTPException(
@@ -73,4 +73,6 @@ def read_users_me(current_user: models.User = Depends(get_current_user)):
 
 @router.post("/logout")
 def logout(request: Request):
-    return {"message": "Successfully logged out. Please clear your token on the client."}
+    return {
+        "message": "Successfully logged out. Please clear your token on the client."
+    }
