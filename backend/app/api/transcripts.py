@@ -77,7 +77,6 @@ async def transcribe_audio(
         )
 
     try:
-       
         temp_path = f"temp_{meeting_id}.wav"
         with open(temp_path, "wb") as f:
             f.write(await file.read())
@@ -88,7 +87,6 @@ async def transcribe_audio(
                 file=audio_file,
                 language=None if language == "auto" else language,  
             )
-
         text = transcript_data.text.strip()
         if not text:
             raise HTTPException(
@@ -101,7 +99,6 @@ async def transcribe_audio(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Whisper error: {str(e)}")
-
 
 
 @router.get("/{transcript_id}", response_model=schemas.TranscriptOut)
