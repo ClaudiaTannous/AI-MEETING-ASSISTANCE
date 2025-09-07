@@ -36,7 +36,6 @@ export default function SignupPage() {
       style={{ backgroundImage: "url('/images/background1.png')" }}
     >
       <div className="bg-white/30 backdrop-blur-md shadow-lg w-full max-w-5xl rounded-xl flex overflow-hidden">
-        {/* Left column */}
         <div className="w-1/2 bg-[#720026] text-white flex flex-col justify-center items-center p-8">
           <h2 className="text-3xl font-extrabold mb-4">
             <ReactTyped
@@ -57,7 +56,6 @@ export default function SignupPage() {
           </p>
         </div>
 
-        {/* Right column: signup form */}
         <div className="w-1/2 p-8">
           <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>
 
@@ -84,7 +82,6 @@ export default function SignupPage() {
               />
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Email
@@ -100,7 +97,6 @@ export default function SignupPage() {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Password
