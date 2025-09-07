@@ -10,9 +10,9 @@ export default function HomePage() {
     const token = localStorage.getItem("token");
 
     if (token) {
-      router.push("/meetings"); // go to dashboard
+      router.push("/meetings");
     } else {
-      router.push("/login"); // go to login
+      router.push("/login");
     }
   }, [router]);
 

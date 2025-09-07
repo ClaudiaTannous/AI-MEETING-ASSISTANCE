@@ -8,7 +8,6 @@ from backend.app.api.auth import get_current_user
 router = APIRouter(prefix="/meetings", tags=["meetings"])
 
 
-# ----------------- Create Meeting -----------------
 @router.post("", response_model=schemas.MeetingWithTranscript)
 def create_meeting(
     meeting: schemas.MeetingCreate,
@@ -28,7 +27,6 @@ def get_meetings(
     return crud.get_meetings_for_user(db=db, user_id=current_user.id)
 
 
-# ----------------- Get Single Meeting -----------------
 @router.get("/{meeting_id}", response_model=schemas.MeetingWithTranscript)
 def get_meeting(
     meeting_id: int,
@@ -45,7 +43,6 @@ def get_meeting(
     return meeting
 
 
-# ----------------- Delete Meeting -----------------
 @router.delete("/{meeting_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_meeting(
     meeting_id: int,

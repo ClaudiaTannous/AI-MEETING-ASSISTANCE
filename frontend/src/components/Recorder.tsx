@@ -73,11 +73,11 @@ export default function Recorder() {
             const summaryData = await summaryRes.json();
             setSummary(summaryData.summary_text);
           } else {
-            setSummary("❌ Failed to generate summary.");
+            setSummary(" Failed to generate summary.");
           }
         } catch (err) {
           console.error("Upload error:", err);
-          setSummary("⚠️ Could not connect to backend.");
+          setSummary(" Could not connect to backend.");
         }
       };
 

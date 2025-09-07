@@ -66,6 +66,7 @@ def create_or_update_transcript(
 async def transcribe_audio(
     meeting_id: int,
     file: UploadFile = File(...),
+    language: str = "auto",  
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
@@ -76,16 +77,16 @@ async def transcribe_audio(
         )
 
     try:
-        # Save temp file
+       
         temp_path = f"temp_{meeting_id}.wav"
         with open(temp_path, "wb") as f:
             f.write(await file.read())
 
-        # Call Whisper
         with open(temp_path, "rb") as audio_file:
             transcript_data = client.audio.transcriptions.create(
                 model="whisper-1",
                 file=audio_file,
+                language=None if language == "auto" else language,  
             )
 
         text = transcript_data.text.strip()
@@ -100,6 +101,7 @@ async def transcribe_audio(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Whisper error: {str(e)}")
+
 
 
 @router.get("/{transcript_id}", response_model=schemas.TranscriptOut)

@@ -8,14 +8,11 @@ from openai import OpenAI
 
 router = APIRouter(prefix="/summaries", tags=["summaries"])
 
-# Initialize OpenAI client
+
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 def generate_summary(transcript_text: str) -> str:
-    """
-    Generate a summary of a meeting transcript using OpenAI GPT model.
-    """
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -30,18 +27,12 @@ def generate_summary(transcript_text: str) -> str:
     return response.choices[0].message.content.strip()
 
 
-# ----------------- ROUTES -----------------
-
-
 @router.post("/{transcript_id}/ai", response_model=schemas.SummaryOut)
 def create_ai_summary(
     transcript_id: int,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    """
-    Generate an AI summary for a given transcript and save it.
-    """
     transcript = crud.get_transcript(db, transcript_id=transcript_id)
     if not transcript or transcript.meeting.user_id != current_user.id:
         raise HTTPException(
@@ -61,9 +52,6 @@ def get_summaries_for_transcript(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    """
-    Get all summaries for a given transcript.
-    """
     transcript = crud.get_transcript(db, transcript_id=transcript_id)
     if not transcript or transcript.meeting.user_id != current_user.id:
         raise HTTPException(
@@ -79,9 +67,6 @@ def update_summary(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    """
-    Update an existing summary.
-    """
     summary = db.query(models.Summary).filter(models.Summary.id == summary_id).first()
     if not summary or summary.transcript.meeting.user_id != current_user.id:
         raise HTTPException(
@@ -104,9 +89,6 @@ def delete_summary(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    """
-    Delete a summary by ID.
-    """
     summary = db.query(models.Summary).filter(models.Summary.id == summary_id).first()
     if not summary or summary.transcript.meeting.user_id != current_user.id:
         raise HTTPException(

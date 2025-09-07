@@ -9,7 +9,6 @@ import { ReactTyped } from "react-typed";
 export default function SignupPage() {
   const router = useRouter();
 
-  // Form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,7 +65,6 @@ export default function SignupPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Name

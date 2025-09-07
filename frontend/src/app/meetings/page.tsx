@@ -60,7 +60,6 @@ export default function MeetingsPage() {
       className="min-h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('/images/background1.png')" }}
     >
-      {/* Create Meeting Card */}
       <div className="flex justify-center mt-12 px-6">
         <div className="bg-white/30 backdrop-blur-md shadow-lg px-12 py-8 rounded-3xl border border-white/40 w-full max-w-7xl flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -142,7 +141,6 @@ export default function MeetingsPage() {
                             </span>
                           )}
 
-                          {/* Delete Button beside badge */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
