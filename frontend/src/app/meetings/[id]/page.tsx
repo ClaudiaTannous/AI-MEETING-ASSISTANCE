@@ -6,10 +6,6 @@ import api from "@/lib/api";
 import type { Meeting, Transcript, Summary } from "@/types";
 import Recorder from "@/components/Recorder";
 
-interface RecorderProps {
-  meetingId: number;
-}
-
 export default function MeetingDetailsPage() {
   const params = useParams();
   const router = useRouter();
@@ -91,6 +87,15 @@ export default function MeetingDetailsPage() {
     }
   };
 
+  const handleDeleteSummary = async (id: number) => {
+    try {
+      await api.delete(`/summaries/${id}`);
+      setSummaries((prev) => prev.filter((s) => s.id !== id));
+    } catch (err) {
+      console.error("Error deleting summary:", err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -113,10 +118,7 @@ export default function MeetingDetailsPage() {
       style={{ backgroundImage: "url('/images/background1.png')" }}
     >
       <div className="pt-10 px-6 space-y-8 max-w-7xl mx-auto">
-        <div
-          className="bg-white/30 backdrop-blur-md shadow-lg px-12 py-8 rounded-3xl border border-white/40 
-                   w-fit max-w-7xl mx-auto flex items-center justify-between"
-        >
+        <div className="bg-white/30 backdrop-blur-md shadow-lg px-12 py-8 rounded-3xl border border-white/40 w-fit max-w-7xl mx-auto flex items-center justify-between">
           {editingTitle ? (
             <div className="flex items-center gap-2 w-full">
               <input
@@ -163,7 +165,7 @@ export default function MeetingDetailsPage() {
 
           {transcript && (
             <div className="mt-6">
-              <h2 className="text-xl font-semibold mb-3">Live Transcript</h2>
+              <h2 className="text-xl font-semibold mb-3">Transcript</h2>
               <p className="text-gray-800 whitespace-pre-wrap">
                 {transcript.content}
               </p>
@@ -192,51 +194,64 @@ export default function MeetingDetailsPage() {
               {summaries.map((summary) => (
                 <div
                   key={summary.id}
-                  className="p-4 bg-white rounded-lg shadow space-y-2"
+                  className="p-4 bg-white rounded-lg shadow flex justify-between items-start"
                 >
-                  {editingSummaryId === summary.id ? (
-                    <div className="space-y-2">
-                      <textarea
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        className="w-full border rounded-lg p-2"
-                        rows={3}
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleUpdateSummary(summary.id)}
-                          className="bg-[#720026] text-white px-3 py-1 rounded-lg hover:bg-[#5a001d]"
-                        >
-                          Save
-                        </button>
+                  <div className="flex-1 space-y-2">
+                    {editingSummaryId === summary.id ? (
+                      <div className="space-y-2">
+                        <textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          className="w-full border rounded-lg p-2"
+                          rows={3}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleUpdateSummary(summary.id)}
+                            className="bg-[#720026] text-white px-3 py-1 rounded-lg hover:bg-[#5a001d]"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditingSummaryId(null);
+                              setEditText("");
+                            }}
+                            className="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-gray-800">{summary.summary_text}</p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(summary.created_at).toLocaleString()}
+                        </p>
                         <button
                           onClick={() => {
-                            setEditingSummaryId(null);
-                            setEditText("");
+                            setEditingSummaryId(summary.id);
+                            setEditText(summary.summary_text);
                           }}
-                          className="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded-lg"
+                          className="text-[#720026] text-xs underline hover:text-[#5a001d]"
                         >
-                          Cancel
+                          Edit
                         </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-gray-800">{summary.summary_text}</p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(summary.created_at).toLocaleString()}
-                      </p>
-                      <button
-                        onClick={() => {
-                          setEditingSummaryId(summary.id);
-                          setEditText(summary.summary_text);
-                        }}
-                        className="text-[#720026] text-xs underline hover:text-[#5a001d]"
-                      >
-                        Edit
-                      </button>
-                    </>
-                  )}
+                      </>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => handleDeleteSummary(summary.id)}
+                    className="ml-4 p-1 hover:scale-110 transition-transform"
+                  >
+                    <img
+                      src="/images/delete.svg"
+                      alt="Delete"
+                      className="w-5 h-5 cursor-pointer"
+                    />
+                  </button>
                 </div>
               ))}
             </div>
