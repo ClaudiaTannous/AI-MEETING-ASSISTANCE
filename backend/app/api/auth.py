@@ -37,7 +37,6 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-
 @router.post("/login", response_model=TokenResponse)
 def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, data.email)
@@ -55,7 +54,7 @@ def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ):
     payload = verify_access_token(token)
-    if payload is None:   
+    if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
@@ -76,7 +75,6 @@ def get_current_user(
         )
 
     return user
-
 
 
 @router.get("/me", response_model=schemas.UserOut)
