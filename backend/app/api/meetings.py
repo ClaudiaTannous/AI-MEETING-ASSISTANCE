@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from sqlalchemy.orm import Session
 
-from backend.app.db import crud, schemas, models
-from backend.app.db.session import get_db
-from backend.app.api.auth import get_current_user
+from app.db import crud, schemas, models
+from app.db.session import get_db
+from app.api.auth import get_current_user
 
 router = APIRouter(prefix="/meetings", tags=["meetings"])
 

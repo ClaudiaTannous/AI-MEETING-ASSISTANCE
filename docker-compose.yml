@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: meeting-backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: meeting-frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    container_name: meeting-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Hani13121973
+      POSTGRES_DB: meeting_assistant_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

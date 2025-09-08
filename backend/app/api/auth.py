@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from backend.app.db import crud, schemas, models
+from app.db import crud, schemas, models
 from fastapi import Request
 
-from backend.app.core.security import (
+from app.core.security import (
     hash_password,
     verify_password,
     create_access_token,
     verify_access_token,
 )
-from backend.app.db.session import get_db
-from backend.app.db.schemas import LoginRequest
+from app.db.session import get_db
+from app.db.schemas import LoginRequest
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/auth", tags=["auth"])

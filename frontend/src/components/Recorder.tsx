@@ -42,7 +42,7 @@ export default function Recorder() {
           }
 
           const transcriptRes = await fetch(
-            `http://localhost:8000/transcripts/${meetingId}/whisper`,
+            `http://localhost:8080/transcripts/${meetingId}/whisper`,
             {
               method: "POST",
               headers: { Authorization: `Bearer ${token}` },
@@ -59,7 +59,7 @@ export default function Recorder() {
           const transcriptId = transcriptData.id;
 
           const summaryRes = await fetch(
-            `http://localhost:8000/summaries/${transcriptId}/ai`,
+            `http://localhost:8080/summaries/${transcriptId}/ai`,
             {
               method: "POST",
               headers: {

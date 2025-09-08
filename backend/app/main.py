@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.app.api import auth, meetings, transcripts, summaries
-from backend.app.db.session import Base, engine
+from app.api import auth, meetings, transcripts, summaries
+from app.db.session import Base, engine
 
 
 Base.metadata.create_all(bind=engine)
@@ -16,7 +16,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # 👈 allow frontend origin
+    allow_origins=origins,  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

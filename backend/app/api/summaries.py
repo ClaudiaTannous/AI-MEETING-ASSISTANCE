@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from backend.app.db import crud, schemas, models
-from backend.app.db.session import get_db
-from backend.app.api.auth import get_current_user
-from backend.app.core.config import settings
+from app.db import crud, schemas, models
+from app.db.session import get_db
+from app.api.auth import get_current_user
+from app.core.config import settings
 from openai import OpenAI
 
 router = APIRouter(prefix="/summaries", tags=["summaries"])
