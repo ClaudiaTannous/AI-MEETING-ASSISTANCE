@@ -24,14 +24,18 @@ class TokenResponse(BaseModel):
     token_type: str
 
 
-@router.post("/register", response_model=schemas.UserOut)
+@router.post("/register", response_model=TokenResponse)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed_pw = hash_password(user.password)
-    return crud.create_user(db=db, user=user, hashed_password=hashed_pw)
+    new_user = crud.create_user(db=db, user=user, hashed_password=hashed_pw)
+
+    access_token = create_access_token({"sub": str(new_user.id)})
+    return {"access_token": access_token, "token_type": "bearer"}
+
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -51,10 +55,18 @@ def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ):
     payload = verify_access_token(token)
-    user_id: str = payload.get("sub")
+    if payload is None:   
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user_id: str | None = payload.get("sub")
     if user_id is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid payload"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token payload missing 'sub'",
         )
 
     user = crud.get_user(db, int(user_id))
@@ -64,6 +76,7 @@ def get_current_user(
         )
 
     return user
+
 
 
 @router.get("/me", response_model=schemas.UserOut)
